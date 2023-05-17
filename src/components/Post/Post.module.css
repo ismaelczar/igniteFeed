@@ -1,0 +1,106 @@
+.post {
+  background: var(--gray-800);
+  border-radius: 8px;
+  padding: 2.5rem;
+
+}
+
+.post+.post {
+  margin-top: 2rem;
+}
+
+.post>header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  gap: 1rem;
+}
+
+
+.profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile strong {
+  color: var(--gray-100);
+  line-height: 160%;
+}
+
+.profile span {
+  color: var(--gray-400);
+  font-size: 0.875rem;
+}
+
+.post time {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+}
+
+.content {
+  margin-top: 1.5rem;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.contentLink {
+  /* display: flex; */
+}
+
+
+.content p {
+  margin-top: 1rem;
+}
+
+.content a {
+  text-decoration: none;
+  color: var(--green-500);
+}
+
+.form {
+  width: 100%;
+  margin-top: 1.5rem;
+
+}
+
+.form>strong {
+  display: block;
+  border-top: 1px solid var(--gray-600);
+  padding: 1.5rem 0 1rem 0;
+  line-height: 160%;
+}
+
+.form textarea {
+  background: var(--gray-900);
+  width: 100%;
+  height: 6rem;
+  padding: 1rem;
+  border: 0;
+  border-radius: 8px;
+  resize: none;
+  color: var(--white);
+}
+
+.form button[type=submit] {
+  background: var(--green-500);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 1rem 1.5rem 0.875rem 1.5rem;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.form footer {
+  visibility: hidden;
+  max-height: 0;
+}
+
+.form:focus-within footer {
+  visibility: visible;
+  max-height: none;
+}
