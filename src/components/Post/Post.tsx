@@ -5,12 +5,34 @@ import { Avatar } from '../Avatar/Avatar';
 import { Comment } from '../Comment/Comment'
 
 import styles from './post.module.css';
-import { useState } from 'react';
+import { FormEvent, useState, ChangeEvent, InvalidEvent } from 'react';
 
 
 
+/* FORMA DE TIPAR OBJETOS. COMO ESTÁ SENDO DESESTRUTURADO AS PROPS, PRECISAMOS TIPAR TODO O OBJETO!!! */
+interface Content {
+  type: 'paragraph' | 'link' | 'email' | '#';
+  content: string;
+}
 
-export function Post({ author, publishedAt, content }) {
+interface Author {
+  name: string;
+  role: string;
+  avatarURL: string;
+
+}
+
+export interface PostType {
+  id?: number;
+  author: Author;
+  publishedAt: Date;
+  content: Content[];
+}
+
+// interface PostProps {
+//   post: PostType;
+// }
+export function Post({ author, publishedAt,content }: PostType) {
 
   const publishInFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
     locale: ptBR,
@@ -22,58 +44,66 @@ export function Post({ author, publishedAt, content }) {
     addSuffix: true,
   });
 
-  const [createNewText, setCreateNewText] = useState(''); //ESTADO PARA O TEXTAREA
-
   const [comments, setComments] = useState(
     [{
       id: Math.random(),
       author: {
-        src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
+        source: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
         name: 'Maria',
       },
       content: 'Muito bom, parabéns!!! :)',
       publishedAtComment: new Date('2023-05-13 09:00:00'),
+
     },
 
     {
       id: Math.random(),
       author: {
-        src: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=450&q=50",
+        source: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=450&q=50",
         name: 'Devon',
       },
       content: 'Showww 🎓🎓🎓',
       publishedAtComment: new Date('2023-05-13 09:00:00'),
+
     },]
   );
 
-  function hundleRemoveComment(commentID) {
+  const [text, setText] = useState('');
+
+
+
+  function hundleRemoveComment(commentID: number) {
+
     setComments(prevState => {
       return prevState.filter(comment => comment.id !== commentID)
     })
   }
 
-  function hundleSubmitForm() {
-    event.preventDefault();
+  function hundleSubmitForm(event: FormEvent) {
+    event.preventDefault(); // remove o efeito padão do form
 
-    setComments((prevState) => [
+    setComments((prevState) => [ //inclui mais um comentário no post
       ...prevState,
       {
         id: Math.random(),
         author: {
-          src: "https://avatars.githubusercontent.com/u/103972495?v=4",
+          source: "https://avatars.githubusercontent.com/u/103972495?v=4",
           name: 'Ismael Cézar',
         },
-        content: createNewText,
-        publishedAtComment: new Date('2023-05-16 22:00:00'),
+        content: text,
+        publishedAtComment: new Date('2023-05-13 09:00:00'),
       }
-    ]
-    )  
-    setCreateNewText('');
-
+    ])
+    setText('')
   }
 
-  function hundleNewCommentChage() {
-    setCreateNewText(event.target.value)
+  function hundleTextChenge(event: ChangeEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('')
+    setText(event.target.value)
+  }
+
+  function hundleMensageInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('Ei major... informe algo!')
   }
 
 
@@ -85,7 +115,6 @@ export function Post({ author, publishedAt, content }) {
           <Avatar
             border
             src={author.avatarURL}
-
           />
 
           <div className={styles.profile}>
@@ -99,19 +128,17 @@ export function Post({ author, publishedAt, content }) {
         </time>
 
       </header>
-
       <div className={styles.content}>
         <div className={styles.contentLink}>
           {content.map(line => {
             if (line.type === 'paragraph') {
-              return <p>{line.content}</p>;
+              return <p key={line.content}>{line.content}</p>;
             } else if (line.type === 'link' || line.type === 'email' || line.type === '#') {
-              return <p><a href="#">{line.content}</a></p>
+              return <p key={line.content}><a href="#">{line.content}</a></p>
             }
           })
           }
         </div>
-
 
       </div>
 
@@ -120,19 +147,21 @@ export function Post({ author, publishedAt, content }) {
 
         <textarea
           name='comment'
-          placeholder='Digite seu comentário!'
-          onChange={hundleNewCommentChage}
-          value={createNewText}
+          onChange={hundleTextChenge} //pega o texto digitado.
+          value={text}
+          placeholder='Insira seu comentário!'
+          required
+          onInvalid={hundleMensageInvalid}
+
         />
 
 
         <footer>
-          <button type='submit'>Publicar</button>
+          <button type='submit' disabled={text.length === 0}>Publicar</button>
         </footer>
       </form>
 
       {comments.map(post => (
-
         <Comment
           key={post.id}
           id={post.id}
@@ -140,6 +169,8 @@ export function Post({ author, publishedAt, content }) {
           content={post.content}
           publishedAtComment={post.publishedAtComment}
           onRemoveComment={hundleRemoveComment}
+
+
         />
       ))}
 

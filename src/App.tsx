@@ -1,15 +1,14 @@
 import { Header } from './components/Header/Header.jsx';
-import { Post } from './components/Post/Post.jsx'
+import { Post, PostType } from './components/Post/Post.jsx'
 import { Aside } from './components/Aside/Aside.jsx'
 
 import './global.css';
 import styles from './App.module.css'
 
 
-
 function App() {
 
-  const posts = [
+  const posts:PostType[] = [
     {
       id: 1,
       author: {
@@ -23,7 +22,7 @@ function App() {
         { type: 'link', content: '👉 jane.design/doctorcare' },
       ],
 
-      publishIN: new Date('2023-05-13 07:30:00'),
+      publishedAt: new Date('2023-05-13 07:30:00'),
 
     },
 
@@ -42,7 +41,7 @@ function App() {
         { type: '#', content: '#novoprojeto' },
       ],
 
-      publishIN: new Date('2023-05-12 20:00:00'),
+      publishedAt: new Date('2023-05-12 20:00:00'),
 
 
     },
@@ -63,7 +62,7 @@ function App() {
                 key={post.id}
                 author={post.author}
                 content={post.content}
-                publishedAt={post.publishIN}
+                publishedAt={post.publishedAt}
 
               />
             ))}

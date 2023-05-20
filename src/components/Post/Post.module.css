@@ -95,6 +95,11 @@
   cursor: pointer;
 }
 
+.form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .form footer {
   visibility: hidden;
   max-height: 0;
